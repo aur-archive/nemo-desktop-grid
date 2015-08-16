@@ -1,0 +1,18 @@
+post_install() {
+  glib-compile-schemas --allow-any-name usr/share/glib-2.0/schemas
+  update-desktop-database -q
+  gtk-update-icon-cache -ftq usr/share/icons/hicolor
+  update-mime-database usr/share/mime > /dev/null
+  echo "Setting /org/nemo/desktop/text-ellipsis-limit to 2 for max. 2 lines below an icon"
+  dconf write /org/nemo/desktop/text-ellipsis-limit 2
+}
+
+post_upgrade() {
+  post_install "$1"
+}
+
+post_remove() {
+  post_install "$1"
+  echo "resetting the dconf-setting to its original value"
+  dconf reset /org/nemo/desktop/text-ellipsis-limit
+}
